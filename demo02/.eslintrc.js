@@ -9,6 +9,7 @@ module.exports = {
     }
   },
   "rules": {
+      "react/prop-types": 0,
       "no-console": 0,
       "no-use-before-define": 0,
       "react/prefer-stateless-function": 0,
