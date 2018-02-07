@@ -9,14 +9,41 @@ class ComponentInput extends Component {
       content: '',
     };
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleUsernameBlur = this.handleUsernameBlur.bind(this);
     this.handleContentChange = this.handleContentChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentWillMount() {
+    this.loadUsername();
+  }
+
+  componentDidMount() {
+    this.textarea.focus();
   }
 
   handleUsernameChange(event) {
     this.setState({
       username: event.target.value,
     });
+  }
+
+  loadUsername() {
+    const username = localStorage.getItem('username');
+    if (username) {
+      this.setState({
+        username,
+      });
+    }
+  }
+
+  /* eslint-disable class-methods-use-this */
+  saveUsername(username) {
+    localStorage.setItem('username', username);
+  }
+
+  handleUsernameBlur(event) {
+    this.saveUsername(event.target.value);
   }
 
   handleContentChange(event) {
@@ -34,6 +61,7 @@ class ComponentInput extends Component {
     this.setState({
       content: '',
     });
+    this.textarea.focus();
   }
 
   render() {
@@ -42,13 +70,21 @@ class ComponentInput extends Component {
         <div className="comment-field">
           <span className="comment-field-name">用户名:</span>
           <div className="comment-field-input">
-            <input value={this.state.username} onChange={this.handleUsernameChange} />
+            <input
+              value={this.state.username}
+              onChange={this.handleUsernameChange}
+              onBlur={this.handleUsernameBlur}
+            />
           </div>
         </div>
         <div className="comment-field">
           <span className="comment-field-name">评论内容:</span>
           <div className="comment-field-input">
-            <textarea value={this.state.content} onChange={this.handleContentChange} />
+            <textarea
+              ref={(textarea) => { this.textarea = textarea; return this.textarea; }}
+              value={this.state.content}
+              onChange={this.handleContentChange}
+            />
           </div>
         </div>
         <div className="comment-field-button">
