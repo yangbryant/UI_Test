@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './CommentInput.css';
 
+const moment = require('moment');
+
 class ComponentInput extends Component {
   constructor() {
     super();
@@ -8,10 +10,6 @@ class ComponentInput extends Component {
       username: '',
       content: '',
     };
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
-    this.handleUsernameBlur = this.handleUsernameBlur.bind(this);
-    this.handleContentChange = this.handleContentChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -20,12 +18,6 @@ class ComponentInput extends Component {
 
   componentDidMount() {
     this.textarea.focus();
-  }
-
-  handleUsernameChange(event) {
-    this.setState({
-      username: event.target.value,
-    });
   }
 
   loadUsername() {
@@ -42,20 +34,28 @@ class ComponentInput extends Component {
     localStorage.setItem('username', username);
   }
 
-  handleUsernameBlur(event) {
+  handleUsernameChange = (event) => {
+    this.setState({
+      username: event.target.value,
+    });
+  }
+
+  handleUsernameBlur = (event) => {
     this.saveUsername(event.target.value);
   }
 
-  handleContentChange(event) {
+  handleContentChange = (event) => {
     this.setState({
       content: event.target.value,
     });
   }
 
-  handleSubmit() {
+  handleSubmit = () => {
     if (this.props.onSubmit) {
       const { username, content } = this.state;
-      const key = Date.parse(new Date()) / 1000;
+      // 用moment替换Date
+      // const key = Date.parse(new Date()) / 1000;
+      const key = moment().format('x');
       this.props.onSubmit({ username, content, key });
     }
     this.setState({
