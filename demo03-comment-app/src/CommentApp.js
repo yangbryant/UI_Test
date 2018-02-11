@@ -2,32 +2,14 @@ import React, { Component } from 'react';
 import CommentInput from './CommentInput';
 import CommentList from './CommentList';
 import './CommentApp.css';
+import WrappedComponent from './WrappedComponent';
 
-class CommentApp extends Component {
-  constructor() {
-    super();
+const CommentClass = class CommentApp extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      comments: [],
+      comments: props.data,
     };
-  }
-
-  componentWillMount() {
-    this.loadComments();
-  }
-
-  loadComments() {
-    let comments = localStorage.getItem('comments');
-    if (comments) {
-      comments = JSON.parse(comments);
-      this.setState({
-        comments,
-      });
-    }
-  }
-
-  /* eslint-disable class-methods-use-this */
-  saveComments(comments) {
-    localStorage.setItem('comments', JSON.stringify(comments));
   }
 
   handleSubmitComment = (comment) => {
@@ -39,7 +21,7 @@ class CommentApp extends Component {
     this.setState({
       comments: commentArray,
     });
-    this.saveComments(commentArray);
+    this.props.saveData(commentArray);
   }
 
   handleDeleteComment = (index) => {
@@ -49,7 +31,7 @@ class CommentApp extends Component {
     this.setState({
       comments: commentArray,
     });
-    this.saveComments(commentArray);
+    this.props.saveData(commentArray);
   }
 
   render() {
@@ -60,6 +42,7 @@ class CommentApp extends Component {
       </div>
     );
   }
-}
+};
 
+const CommentApp = WrappedComponent(CommentClass, 'comments');
 export default CommentApp;

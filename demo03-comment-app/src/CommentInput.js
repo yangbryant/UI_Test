@@ -1,37 +1,20 @@
 import React, { Component } from 'react';
 import './CommentInput.css';
+import WrappedComponent from './WrappedComponent';
 
 const moment = require('moment');
 
-class ComponentInput extends Component {
-  constructor() {
-    super();
+const ComponentInputClass = class ComponentInput extends Component {
+  constructor(props) {
+    super(props);
     this.state = {
-      username: '',
+      username: props.data,
       content: '',
     };
   }
 
-  componentWillMount() {
-    this.loadUsername();
-  }
-
   componentDidMount() {
     this.textarea.focus();
-  }
-
-  loadUsername() {
-    const username = localStorage.getItem('username');
-    if (username) {
-      this.setState({
-        username,
-      });
-    }
-  }
-
-  /* eslint-disable class-methods-use-this */
-  saveUsername(username) {
-    localStorage.setItem('username', username);
   }
 
   handleUsernameChange = (event) => {
@@ -41,7 +24,7 @@ class ComponentInput extends Component {
   }
 
   handleUsernameBlur = (event) => {
-    this.saveUsername(event.target.value);
+    this.props.saveData(event.target.value);
   }
 
   handleContentChange = (event) => {
@@ -93,6 +76,7 @@ class ComponentInput extends Component {
       </div>
     );
   }
-}
+};
 
+const ComponentInput = WrappedComponent(ComponentInputClass, 'username');
 export default ComponentInput;
