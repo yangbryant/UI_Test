@@ -1,5 +1,16 @@
 import registerServiceWorker from './registerServiceWorker';
 
+function createStore(state, stateChanger) {
+  const listeners = [];
+  const subscribe = listener => listeners.push(listener);
+  const getState = () => state;
+  const dispatch = (action) => {
+    stateChanger(state, action);
+    listeners.forEach(listener => listener());
+  };
+  return { getState, dispatch, subscribe };
+}
+
 const appState = {
   title: {
     text: 'React.js 小书',
@@ -11,7 +22,7 @@ const appState = {
   },
 };
 
-function dispatch(action) {
+function stateChanged(state, action) {
   switch (action.type) {
     case 'UPDATE_TITLE_TEXT':
       appState.title.text = action.text;
@@ -41,8 +52,11 @@ function renderApp(appStates) {
   renderContent(appStates.content);
 }
 
-dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' });
-dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' });
-renderApp(appState);
+const store = createStore(appState, stateChanged);
+store.subscribe(() => renderApp(store.getState()));
+renderApp(store.getState());
+
+store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' });
+store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' });
 
 registerServiceWorker();
