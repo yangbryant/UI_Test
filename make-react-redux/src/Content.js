@@ -3,10 +3,31 @@ import PropTypes from 'prop-types';
 import ThemeSwitch from './ThemeSwitch';
 
 class Content extends Component {
+  static contextTypes = {
+    store: PropTypes.object,
+  }
+
+  constructor() {
+    super();
+    this.state = { themeColor: '' };
+  }
+
+  componentWillMount() {
+    const { store } = this.context;
+    this.updateThemeColor();
+    store.subscribe(() => this.updateThemeColor());
+  }
+
+  updateThemeColor() {
+    const { store } = this.context;
+    const state = store.getState();
+    this.setState({ themeColor: state.themeColor });
+  }
+
   render() {
     return (
       <div>
-        <p>React.js小书</p>
+        <p style={{ color: this.state.themeColor }}>React.js小书</p>
         <ThemeSwitch />
       </div>
     );
