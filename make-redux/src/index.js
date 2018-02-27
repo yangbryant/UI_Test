@@ -1,29 +1,32 @@
 import registerServiceWorker from './registerServiceWorker';
 
 /* eslint-disable no-param-reassign */
-function createStore(state, stateChanger) {
+function createStore(reducer) {
+  let state = null;
   const listeners = [];
   const subscribe = listener => listeners.push(listener);
   const getState = () => state;
   const dispatch = (action) => {
-    state = { ...stateChanger(state, action) };
+    state = reducer(state, action);
     listeners.forEach(listener => listener());
   };
+  dispatch({});
   return { getState, dispatch, subscribe };
 }
 
-const appState = {
-  title: {
-    text: 'React.js 小书',
-    color: 'red',
-  },
-  content: {
-    text: 'React.js 小书内容',
-    color: 'blue',
-  },
-};
-
-function stateChanged(state, action) {
+function themeReducer(state, action) {
+  if (!state) {
+    return {
+      title: {
+        text: 'React.js 小书',
+        color: 'red',
+      },
+      content: {
+        text: 'React.js 小书内容',
+        color: 'blue',
+      },
+    };
+  }
   switch (action.type) {
     case 'UPDATE_TITLE_TEXT':
       return {
@@ -69,7 +72,7 @@ function renderApp(newAppStates, oldAppStates = {}) {
   renderContent(newAppStates.content, oldAppStates.content);
 }
 
-const store = createStore(appState, stateChanged);
+const store = createStore(themeReducer);
 let oldState = store.getState();
 store.subscribe(() => {
   const newState = store.getState();
