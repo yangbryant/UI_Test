@@ -1,33 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Connect from './Connect';
 
 class Header extends Component {
-  static contextTypes = {
-    store: PropTypes.object,
-  }
-
-  constructor() {
-    super();
-    this.state = { themeColor: '' };
-  }
-
-  componentWillMount() {
-    const { store } = this.context;
-    this.updateThemeColor();
-    store.subscribe(() => this.updateThemeColor());
-  }
-
-  updateThemeColor() {
-    const { store } = this.context;
-    const state = store.getState();
-    this.setState({ themeColor: state.themeColor });
-  }
+  static propTypes = {
+    themeColor: PropTypes.string.isRequired,
+  };
 
   render() {
     return (
-      <h1 style={{ color: this.state.themeColor }}>React.js 小书</h1>
+      <h1 style={{ color: this.props.themeColor }}>React.js 小书</h1>
     );
   }
 }
+
+/* eslint-disable no-class-assign */
+const mapStateToProps = state => ({
+  themeColor: state.themeColor,
+});
+
+Header = Connect(mapStateToProps)(Header);
 
 export default Header;
