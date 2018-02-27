@@ -1,11 +1,12 @@
 import registerServiceWorker from './registerServiceWorker';
 
+/* eslint-disable no-param-reassign */
 function createStore(state, stateChanger) {
   const listeners = [];
   const subscribe = listener => listeners.push(listener);
   const getState = () => state;
   const dispatch = (action) => {
-    stateChanger(state, action);
+    state = { ...stateChanger(state, action) };
     listeners.forEach(listener => listener());
   };
   return { getState, dispatch, subscribe };
@@ -25,35 +26,56 @@ const appState = {
 function stateChanged(state, action) {
   switch (action.type) {
     case 'UPDATE_TITLE_TEXT':
-      appState.title.text = action.text;
-      break;
+      return {
+        ...state,
+        title: {
+          ...state.title,
+          color: action.text,
+        },
+      };
     case 'UPDATE_TITLE_COLOR':
-      appState.title.color = action.color;
-      break;
+      return {
+        ...state,
+        title: {
+          ...state.title,
+          color: action.color,
+        },
+      };
     default:
-      break;
+      return state;
   }
 }
 
-function renderTitle(title) {
+function renderTitle(newTitle, oldTitle = {}) {
+  if (newTitle === oldTitle) return;
+  console.log('title');
   const titleDOM = document.getElementById('title');
-  titleDOM.innerHTML = title.text;
-  titleDOM.style.color = title.color;
+  titleDOM.innerHTML = newTitle.text;
+  titleDOM.style.color = newTitle.color;
 }
 
-function renderContent(content) {
+function renderContent(newContent, oldContent = {}) {
+  if (newContent === oldContent) return;
+  console.log('content');
   const contentDOM = document.getElementById('content');
-  contentDOM.innerHTML = content.text;
-  contentDOM.style.color = content.color;
+  contentDOM.innerHTML = newContent.text;
+  contentDOM.style.color = newContent.color;
 }
 
-function renderApp(appStates) {
-  renderTitle(appStates.title);
-  renderContent(appStates.content);
+function renderApp(newAppStates, oldAppStates = {}) {
+  if (newAppStates === oldAppStates) return;
+  console.log('appState');
+  renderTitle(newAppStates.title, oldAppStates.title);
+  renderContent(newAppStates.content, oldAppStates.content);
 }
 
 const store = createStore(appState, stateChanged);
-store.subscribe(() => renderApp(store.getState()));
+let oldState = store.getState();
+store.subscribe(() => {
+  const newState = store.getState();
+  renderApp(newState, oldState);
+  oldState = newState;
+});
 renderApp(store.getState());
 
 store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' });
