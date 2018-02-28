@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
 
 import Header from './Header';
 import Content from './Content';
+
+import Provider from './Provider';
 
 function createStore(reducer) {
   let state = null;
@@ -36,25 +37,19 @@ const themeReducer = (state, action) => {
 const store = createStore(themeReducer);
 
 class App extends Component {
-  static childContextTypes = {
-    store: PropTypes.object,
-  }
-
-  getChildContext() {
-    return { store };
-  }
-
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <Header />
-        </header>
-        <div>
-          <Content />
+      <Provider store={store} >
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo" />
+            <Header />
+          </header>
+          <div>
+            <Content />
+          </div>
         </div>
-      </div>
+      </Provider>
     );
   }
 }
