@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import CommentApp from './containers/CommentApp';
+import commentsReducer from './reducers/comments';
 
-import CommentApp from './CommentApp';
 /* eslint-disable no-param-reassign */
 require('moment').locale('zh-cn', {
   months: '一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月'.split('_'),
@@ -100,11 +103,15 @@ require('moment').locale('zh-cn', {
   },
 });
 
+const store = createStore(commentsReducer);
+
 ReactDOM.render(
-  <div>
-    <App />
-    <CommentApp />
-  </div>,
+  <Provider store={store} >
+    <div>
+      <App />
+      <CommentApp />
+    </div>
+  </Provider>,
   document.getElementById('root'),
 );
 registerServiceWorker();

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Comment from './Comment';
-import './CommentList.css';
+import '../css/CommentList.css';
 
 class CommentList extends Component {
   static defaultProps = {
@@ -12,6 +12,7 @@ class CommentList extends Component {
     }
   }
   render() {
+    console.log(this.props.comments);
     return (
       <div>
         {this.props.comments.map((comment, i) => (

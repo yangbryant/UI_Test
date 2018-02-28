@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import './CommentInput.css';
-import WrappedComponent from './WrappedComponent';
+import '../css/CommentInput.css';
 
 const moment = require('moment');
 
 const ComponentInputClass = class ComponentInput extends Component {
+  static defaultProps = {
+    username: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
-      username: props.data,
+      username: props.username,
       content: '',
     };
   }
@@ -24,7 +27,9 @@ const ComponentInputClass = class ComponentInput extends Component {
   }
 
   handleUsernameBlur = (event) => {
-    this.props.saveData(event.target.value);
+    if (this.props.onUserNameInputBlur) {
+      this.props.onUserNameInputBlur(event.target.value);
+    }
   }
 
   handleContentChange = (event) => {
@@ -78,5 +83,4 @@ const ComponentInputClass = class ComponentInput extends Component {
   }
 };
 
-const ComponentInput = WrappedComponent(ComponentInputClass, 'username');
-export default ComponentInput;
+export default ComponentInputClass;
