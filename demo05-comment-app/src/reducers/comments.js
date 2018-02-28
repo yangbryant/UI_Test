@@ -16,15 +16,19 @@ export default function (state, action) {
         comments: action.comments,
       };
     case ADD_COMMENT:
-      return [
-        ...curState.comments,
-        action.comment,
-      ];
+      return {
+        comments: [
+          ...curState.comments,
+          action.comment,
+        ],
+      };
     case DELETE_COMMENT:
-      return [
-        ...curState.comments.slice(0, action.commentIndex),
-        ...curState.comments.slice(action.commentIndex + 1),
-      ];
+      return {
+        comments: [
+          ...curState.comments.slice(0, action.commentIndex),
+          ...curState.comments.slice(action.commentIndex + 1),
+        ],
+      };
     default:
       return curState;
   }
